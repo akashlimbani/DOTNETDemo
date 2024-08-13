@@ -7,4 +7,5 @@ public interface IUserService
 {
     Task<User> GetUserAsyncById(int id);
     Task<bool> PostUserDataAsync(UserCardRequest request);
+    Task<bool> DeleteUserAsync(int id);
 }

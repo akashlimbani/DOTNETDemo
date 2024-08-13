@@ -62,5 +62,36 @@ public class UserControllerTests
         Assert.NotNull(result);
         Assert.Equal(400, result.StatusCode);
     }
+
+    [Fact]
+    public async Task DeleteUserAsync_ReturnsOk_WhenUserIsDeleted()
+    {
+        // Arrange
+        var userId = 1;
+        _userServiceMock.Setup(service => service.DeleteUserAsync(userId)).ReturnsAsync(true);
+
+        // Act
+        var result = await _userController.DeleteUserAsync(userId) as OkResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(200, result.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteUserAsync_ReturnsNotFound_WhenUserDoesNotExist()
+    {
+        // Arrange
+        var userId = 1;
+        _userServiceMock.Setup(service => service.DeleteUserAsync(userId)).ReturnsAsync(false);
+
+        // Act
+        var result = await _userController.DeleteUserAsync(userId) as NotFoundResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(404, result.StatusCode);
+    }
+
 }
 

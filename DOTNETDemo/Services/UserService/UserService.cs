@@ -32,6 +32,7 @@ public class UserService(IUserRepository userRepository) : IUserService
                 user = new User();
             }
 
+            user.Name = user.Name ?? string.Empty;
             user.CardNumber = request.CardNumber;
             user.CVC = request.CVC;
             user.ExpiryDate = request.ExpiryDate;
@@ -42,6 +43,25 @@ public class UserService(IUserRepository userRepository) : IUserService
         catch (Exception)
         {
             // Log exception details here if needed
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteUserAsync(int id)
+    {
+        try
+        {
+            var user = await _userRepository.GetUserAsyncById(id);
+            if (user == null)
+            {
+                return false; // User not found
+            }
+
+            await _userRepository.DeleteUserAsync(user);
+            return true;
+        }
+        catch (Exception)
+        {
             return false;
         }
     }

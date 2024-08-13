@@ -10,7 +10,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
 
     public async Task<User> GetUserAsyncById(int id)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+        return (await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id))!;
     }
 
     public async Task<bool> AddOrUpdateUserAsync(User user)
@@ -25,5 +25,11 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         }
         await _dbContext.SaveChangesAsync();
         return true;
+    }
+
+    public async Task DeleteUserAsync(User user)
+    {
+        _dbContext.Users.Remove(user);
+        await _dbContext.SaveChangesAsync();
     }
 }
