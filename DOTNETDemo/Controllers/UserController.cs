@@ -1,6 +1,6 @@
 ﻿using DOTNETDemo.Models.Request;
+using DOTNETDemo.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
-using Stanza.AzureFunctions.Services.UserService;
 
 namespace DOTNETDemo.Controllers;
 
@@ -13,12 +13,22 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpGet]
     public async Task<ActionResult> GetUserAsync(int id)
     {
-        return Ok(await _userService.GetUserAsyncById(id));
+        var user = await _userService.GetUserAsyncById(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        return Ok(user);
     }
 
     [HttpPost]
     public async Task<ActionResult> PostUserDataAsync(UserCardRequest request)
     {
-        return Ok(await _userService.PostUserDataAsync(request));
+        var result = await _userService.PostUserDataAsync(request);
+        if (result)
+        {
+            return Ok();
+        }
+        return BadRequest();
     }
 }

@@ -1,7 +1,7 @@
 ﻿using DOTNETDemo.Models.Entities;
 using DOTNETDemo.Models.Request;
 
-namespace Stanza.AzureFunctions.Services.UserService;
+namespace DOTNETDemo.Services.UserService;
 
 public interface IUserService
 {

@@ -1,17 +1,17 @@
-﻿using DOTNETDemo.Data;
-using DOTNETDemo.Models.Entities;
+﻿using DOTNETDemo.Models.Entities;
 using DOTNETDemo.Models.Request;
-using Microsoft.EntityFrameworkCore;
+using DOTNETDemo.Repositorys.UserRepository;
+using DOTNETDemo.Services.UserService;
 
 namespace Stanza.AzureFunctions.Services.UserService;
 
-public class UserService(AppDbContext db) : IUserService
+public class UserService(IUserRepository userRepository) : IUserService
 {
-    private readonly AppDbContext _db = db;
+    private readonly IUserRepository _userRepository = userRepository;
 
     public async Task<User> GetUserAsyncById(int id)
     {
-        return await _db.Users.FirstAsync(x => x.Id == id);
+        return await _userRepository.GetUserAsyncById(id);
     }
 
     public async Task<bool> PostUserDataAsync(UserCardRequest request)
@@ -19,10 +19,9 @@ public class UserService(AppDbContext db) : IUserService
         try
         {
             User user;
-
             if (request.Id > 0)
             {
-                user = await GetUserAsyncById(request.Id);
+                user = await _userRepository.GetUserAsyncById(request.Id);
                 if (user == null)
                 {
                     return false; // Handle the case where the user is not found
@@ -30,22 +29,19 @@ public class UserService(AppDbContext db) : IUserService
             }
             else
             {
-                user = new User
-                {
-                    Name = string.Empty // Assuming name is empty for new users
-                };
-                _db.Users.Add(user);
+                user = new User();
             }
 
             user.CardNumber = request.CardNumber;
             user.CVC = request.CVC;
             user.ExpiryDate = request.ExpiryDate;
 
-            await _db.SaveChangesAsync();
+            await _userRepository.AddOrUpdateUserAsync(user);
             return true;
         }
         catch (Exception)
         {
+            // Log exception details here if needed
             return false;
         }
     }
