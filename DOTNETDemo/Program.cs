@@ -2,10 +2,6 @@ using DOTNETDemo.Data;
 using DOTNETDemo.Repositorys.UserRepository;
 using DOTNETDemo.Services.UserService;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Stanza.AzureFunctions.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);

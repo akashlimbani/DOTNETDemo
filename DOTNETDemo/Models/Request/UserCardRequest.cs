@@ -4,8 +4,12 @@ namespace DOTNETDemo.Models.Request;
 
 public class UserCardRequest
 {
-    [Required(ErrorMessage = "Id is required.")]
-    public required int Id { get; set; }
+    [Required(ErrorMessage = "ID is required.")]
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "Name is required.")]
+    [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
+    public string Name { get; set; }
 
     [Required(ErrorMessage = "Card number is required.")]
     [CreditCard(ErrorMessage = "Invalid card number.")]

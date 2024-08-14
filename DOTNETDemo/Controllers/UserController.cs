@@ -1,47 +1,70 @@
-﻿using DOTNETDemo.Models.Request;
+﻿using DOTNETDemo.Constants;
+using DOTNETDemo.Models.Request;
 using DOTNETDemo.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace DOTNETDemo.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class UserController(IUserService userService) : ControllerBase
+namespace DOTNETDemo.Controllers
 {
-    private readonly IUserService _userService = userService;
-
-    [HttpGet("GetUser")]
-    public async Task<ActionResult> GetUserAsync([Required] int id)
+    [ApiController]
+    public class UserController : ControllerBase
     {
-        var user = await _userService.GetUserAsyncById(id);
-        if (user == null)
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
         {
-            return NotFound();
+            _userService = userService;
         }
-        return Ok(user);
-    }
 
-    [HttpPost("PostUser")]
-    public async Task<ActionResult> PostUserDataAsync(UserCardRequest request)
-    {
-        var result = await _userService.PostUserDataAsync(request);
-        if (result)
+        [HttpGet(ApiRoutes.User.GetUser)]
+        public async Task<ActionResult> GetUserAsync([Required] int id)
         {
+            var user = await _userService.GetUserAsyncById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+        [HttpPost(ApiRoutes.User.CreateUserCard)]
+        public async Task<ActionResult> PostUserDataAsync(UserCardRequest request)
+        {
+            var result = await _userService.PostUserDataAsync(request);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete(ApiRoutes.User.DeleteUserCard)]
+        public async Task<ActionResult> DeleteUserAsync([Required] int id)
+        {
+            var success = await _userService.DeleteUserAsync(id);
+            if (!success)
+            {
+                return NotFound();
+            }
+
             return Ok();
         }
-        return BadRequest();
-    }
 
-    [HttpDelete("DeleteUserCard")]
-    public async Task<ActionResult> DeleteUserAsync([Required] int id)
-    {
-        var success = await _userService.DeleteUserAsync(id);
-        if (!success)
+        [HttpPut(ApiRoutes.User.UpdateUserCard)]
+        public async Task<ActionResult> UpdateUserAsync([FromBody] UserCardRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _userService.UpdateUserAsync(request);
+            if (result)
+            {
+                return Ok();
+            }
+
             return NotFound();
         }
-
-        return Ok();
     }
 }

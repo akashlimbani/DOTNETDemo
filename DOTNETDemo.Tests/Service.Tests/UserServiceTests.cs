@@ -62,7 +62,7 @@ public class UserServiceTests
 
         var existingUser = new User { Id = request.Id };
         _userRepositoryMock.Setup(repo => repo.GetUserAsyncById(request.Id)).ReturnsAsync(existingUser);
-        _userRepositoryMock.Setup(repo => repo.AddOrUpdateUserAsync(It.IsAny<User>())).ReturnsAsync(true);
+        _userRepositoryMock.Setup(repo => repo.AddUserAsync(It.IsAny<User>())).ReturnsAsync(true);
 
         // Act
         var result = await _userService.PostUserDataAsync(request);
@@ -86,7 +86,7 @@ public class UserServiceTests
             ExpiryDate = DateTime.UtcNow.AddYears(1)
         };
 
-        _userRepositoryMock.Setup(repo => repo.AddOrUpdateUserAsync(It.IsAny<User>())).ReturnsAsync(true);
+        _userRepositoryMock.Setup(repo => repo.AddUserAsync(It.IsAny<User>())).ReturnsAsync(true);
 
         // Act
         var result = await _userService.PostUserDataAsync(request);
